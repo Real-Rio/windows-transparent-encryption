@@ -179,7 +179,9 @@ NTSTATUS PocDoCompletionProcessingWhenSafe(
 
 
 
-	WorkItem = ExAllocatePoolWithTag(NonPagedPool, sizeof(POC_WORKITEM_LIST), POC_DPC_BUFFER_TAG);
+	//WorkItem = ExAllocatePoolWithTag(NonPagedPool, sizeof(POC_WORKITEM_LIST), POC_DPC_BUFFER_TAG);
+	WorkItem = ExAllocatePool2(POOL_FLAG_NON_PAGED, sizeof(POC_WORKITEM_LIST), POC_DPC_BUFFER_TAG);
+
 
 	if (NULL == WorkItem)
 	{
@@ -188,10 +190,12 @@ NTSTATUS PocDoCompletionProcessingWhenSafe(
 		goto EXIT;
 	}
 
-	RtlZeroMemory(WorkItem, sizeof(POC_WORKITEM_LIST));
+	//RtlZeroMemory(WorkItem, sizeof(POC_WORKITEM_LIST));
 
 
-	WorkItem->WorkItemParam = ExAllocatePoolWithTag(NonPagedPool, sizeof(POC_WORKITEM_PARAMETER), POC_DPC_BUFFER_TAG);
+	//WorkItem->WorkItemParam = ExAllocatePoolWithTag(NonPagedPool, sizeof(POC_WORKITEM_PARAMETER), POC_DPC_BUFFER_TAG);
+	WorkItem->WorkItemParam = ExAllocatePool2(POOL_FLAG_NON_PAGED, sizeof(POC_WORKITEM_PARAMETER), POC_DPC_BUFFER_TAG);
+
 
 	if (NULL == WorkItem->WorkItemParam)
 	{
@@ -200,7 +204,7 @@ NTSTATUS PocDoCompletionProcessingWhenSafe(
 		goto EXIT;
 	}
 
-	RtlZeroMemory(WorkItem->WorkItemParam, sizeof(POC_WORKITEM_PARAMETER));
+	//RtlZeroMemory(WorkItem->WorkItemParam, sizeof(POC_WORKITEM_PARAMETER));
 
 
 	WorkItem->WorkItemParam->WorkerRoutine = SafePostCallback;

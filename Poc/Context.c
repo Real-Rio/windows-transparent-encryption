@@ -54,7 +54,9 @@ Return Value:
     RtlZeroMemory(streamContext, POC_STREAM_CONTEXT_SIZE);
 
 
-    streamContext->FileName = ExAllocatePoolWithTag(NonPagedPool, POC_MAX_NAME_LENGTH * sizeof(WCHAR), POC_STREAM_CONTEXT_TAG);
+    //streamContext->FileName = ExAllocatePoolWithTag(NonPagedPool, POC_MAX_NAME_LENGTH * sizeof(WCHAR), POC_STREAM_CONTEXT_TAG);
+    streamContext->FileName = ExAllocatePool2(POOL_FLAG_NON_PAGED, POC_MAX_NAME_LENGTH * sizeof(WCHAR), POC_STREAM_CONTEXT_TAG);
+
 
     if (streamContext->FileName == NULL)
     {
@@ -62,10 +64,13 @@ Return Value:
         return STATUS_INSUFFICIENT_RESOURCES;
     }
 
-    RtlZeroMemory(streamContext->FileName, POC_MAX_NAME_LENGTH * sizeof(WCHAR));
+    //RtlZeroMemory(streamContext->FileName, POC_MAX_NAME_LENGTH * sizeof(WCHAR));
 
 
-    streamContext->ShadowSectionObjectPointers = ExAllocatePoolWithTag(NonPagedPool,
+    /*streamContext->ShadowSectionObjectPointers = ExAllocatePoolWithTag(NonPagedPool,
+        PAGE_SIZE,
+        POC_STREAM_CONTEXT_TAG);*/
+    streamContext->ShadowSectionObjectPointers = ExAllocatePool2(POOL_FLAG_NON_PAGED,
         PAGE_SIZE,
         POC_STREAM_CONTEXT_TAG);
 
@@ -75,10 +80,14 @@ Return Value:
         return STATUS_INSUFFICIENT_RESOURCES;
     }
 
-    RtlZeroMemory(streamContext->ShadowSectionObjectPointers, PAGE_SIZE);
+    //RtlZeroMemory(streamContext->ShadowSectionObjectPointers, PAGE_SIZE);
 
 
-    streamContext->PageNextToLastForWrite.Buffer= ExAllocatePoolWithTag(NonPagedPool,
+    /*streamContext->PageNextToLastForWrite.Buffer= ExAllocatePoolWithTag(NonPagedPool,
+        PAGE_SIZE + AES_BLOCK_SIZE,
+        POC_STREAM_CONTEXT_TAG);*/
+    // 后续如果修改加密算法可能要改这个
+    streamContext->PageNextToLastForWrite.Buffer = ExAllocatePool2(POOL_FLAG_NON_PAGED,
         PAGE_SIZE + AES_BLOCK_SIZE,
         POC_STREAM_CONTEXT_TAG);
 
@@ -88,10 +97,13 @@ Return Value:
         return STATUS_INSUFFICIENT_RESOURCES;
     }
 
-    RtlZeroMemory(streamContext->PageNextToLastForWrite.Buffer, PAGE_SIZE + AES_BLOCK_SIZE);
+    //RtlZeroMemory(streamContext->PageNextToLastForWrite.Buffer, PAGE_SIZE + AES_BLOCK_SIZE);
 
 
-    streamContext->Resource = ExAllocatePoolWithTag(NonPagedPool,
+    /*streamContext->Resource = ExAllocatePoolWithTag(NonPagedPool,
+        sizeof(ERESOURCE),
+        POC_RESOURCE_TAG);*/
+    streamContext->Resource = ExAllocatePool2(POOL_FLAG_NON_PAGED,
         sizeof(ERESOURCE),
         POC_RESOURCE_TAG);
 
@@ -101,7 +113,7 @@ Return Value:
         return STATUS_INSUFFICIENT_RESOURCES;
     }
 
-    ExInitializeResourceLite(streamContext->Resource);
+    //ExInitializeResourceLite(streamContext->Resource);
 
 
     *StreamContext = streamContext;
@@ -450,7 +462,7 @@ NTSTATUS PocUpdateStreamContextProcessInfo(
 
     Status = STATUS_UNSUCCESSFUL;
 
-
+    // 将当前processId存入streamContext中
     for (ULONG i = 0; i < POC_MAX_AUTHORIZED_PROCESS_COUNT; i++)
     {
 

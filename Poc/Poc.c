@@ -575,7 +575,7 @@ Return Value:
         goto EXIT;
     }
 
-
+    // 创建通信接口
     status = PocInitCommPort();
 
     if (STATUS_SUCCESS != status)
@@ -885,7 +885,7 @@ PocPostCreateOperationWhenSafe(
             FileName,
             ProcessName));
 
-
+        // 对StreamContext进行初始化
         ExEnterCriticalRegionAndAcquireResourceExclusive(StreamContext->Resource);
 
         RtlZeroMemory(StreamContext->FileName, POC_MAX_NAME_LENGTH * sizeof(WCHAR));
@@ -905,7 +905,7 @@ PocPostCreateOperationWhenSafe(
     /*PT_DBG_PRINT(PTDBG_TRACE_ROUTINES,
         ("\n%s->enter ProcessName = %ws FileName = %ws.\n", __FUNCTION__, ProcessName, FileName));*/
 
-
+    // 判断进程是否是授权进程、备份进程
     ProcessType = PocIsUnauthorizedProcess(ProcessName);
 
 

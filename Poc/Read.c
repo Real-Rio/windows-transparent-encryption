@@ -296,9 +296,12 @@ PocPreReadOperation(
     }
 
 
-    SwapBufferContext = (PPOC_SWAP_BUFFER_CONTEXT)ExAllocatePoolWithTag(NonPagedPool,
+    /*SwapBufferContext = (PPOC_SWAP_BUFFER_CONTEXT)ExAllocatePoolWithTag(NonPagedPool,
         sizeof(POC_SWAP_BUFFER_CONTEXT),
-        READ_BUFFER_TAG);
+        READ_BUFFER_TAG);*/
+        SwapBufferContext = (PPOC_SWAP_BUFFER_CONTEXT)ExAllocatePool2(POOL_FLAG_NON_PAGED,
+            sizeof(POC_SWAP_BUFFER_CONTEXT),
+            READ_BUFFER_TAG);
 
     if (NULL == SwapBufferContext)
     {
@@ -309,7 +312,7 @@ PocPreReadOperation(
         goto ERROR;
     }
 
-    RtlZeroMemory(SwapBufferContext, sizeof(POC_SWAP_BUFFER_CONTEXT));
+    //RtlZeroMemory(SwapBufferContext, sizeof(POC_SWAP_BUFFER_CONTEXT));
 
     if (FltObjects->FileObject->SectionObjectPointer ==
         StreamContext->ShadowSectionObjectPointers)
@@ -793,7 +796,9 @@ NTSTATUS PocPostReadDecrypt(
 
             BytesRead = (ULONG)(FileSize - (StartingVbo + LengthReturned));
 
-            TempNewBuffer = (PCHAR)ExAllocatePoolWithTag(NonPagedPool, (SIZE_T)LengthReturned + BytesRead, READ_BUFFER_TAG);
+            //TempNewBuffer = (PCHAR)ExAllocatePoolWithTag(NonPagedPool, (SIZE_T)LengthReturned + BytesRead, READ_BUFFER_TAG);
+            TempNewBuffer = (PCHAR)ExAllocatePool2(POOL_FLAG_NON_PAGED, (SIZE_T)LengthReturned + BytesRead, READ_BUFFER_TAG);
+
 
             if (NULL == TempNewBuffer)
             {
@@ -804,9 +809,11 @@ NTSTATUS PocPostReadDecrypt(
                 __leave;
             }
 
-            RtlZeroMemory(TempNewBuffer, (SIZE_T)LengthReturned + BytesRead);
+            //RtlZeroMemory(TempNewBuffer, (SIZE_T)LengthReturned + BytesRead);
 
-            TempOrigBuffer = (PCHAR)ExAllocatePoolWithTag(NonPagedPool, (SIZE_T)LengthReturned + BytesRead, READ_BUFFER_TAG);
+            //TempOrigBuffer = (PCHAR)ExAllocatePoolWithTag(NonPagedPool, (SIZE_T)LengthReturned + BytesRead, READ_BUFFER_TAG);
+            TempOrigBuffer = (PCHAR)ExAllocatePool2(POOL_FLAG_NON_PAGED, (SIZE_T)LengthReturned + BytesRead, READ_BUFFER_TAG);
+
 
             if (NULL == TempOrigBuffer)
             {
@@ -817,7 +824,7 @@ NTSTATUS PocPostReadDecrypt(
                 __leave;
             }
 
-            RtlZeroMemory(TempOrigBuffer, (SIZE_T)LengthReturned + BytesRead);
+            //RtlZeroMemory(TempOrigBuffer, (SIZE_T)LengthReturned + BytesRead);
 
             RtlMoveMemory(TempNewBuffer, NewBuffer, LengthReturned);
             RtlMoveMemory(TempNewBuffer + LengthReturned, outReadBuffer, BytesRead);
@@ -885,7 +892,8 @@ NTSTATUS PocPostReadDecrypt(
 
             ASSERT(ReadLength == BytesRead);
 
-            TempNewBuffer = (PCHAR)ExAllocatePoolWithTag(NonPagedPool, (SIZE_T)LengthReturned + BytesRead, READ_BUFFER_TAG);
+            //TempNewBuffer = (PCHAR)ExAllocatePoolWithTag(NonPagedPool, (SIZE_T)LengthReturned + BytesRead, READ_BUFFER_TAG);
+            TempNewBuffer = (PCHAR)ExAllocatePool2(POOL_FLAG_NON_PAGED, (SIZE_T)LengthReturned + BytesRead, READ_BUFFER_TAG);
 
             if (NULL == TempNewBuffer)
             {
@@ -896,9 +904,11 @@ NTSTATUS PocPostReadDecrypt(
                 __leave;
             }
 
-            RtlZeroMemory(TempNewBuffer, (SIZE_T)LengthReturned + BytesRead);
+            //RtlZeroMemory(TempNewBuffer, (SIZE_T)LengthReturned + BytesRead);
 
-            TempOrigBuffer = (PCHAR)ExAllocatePoolWithTag(NonPagedPool, (SIZE_T)LengthReturned + BytesRead, READ_BUFFER_TAG);
+            //TempOrigBuffer = (PCHAR)ExAllocatePoolWithTag(NonPagedPool, (SIZE_T)LengthReturned + BytesRead, READ_BUFFER_TAG);
+            TempOrigBuffer = (PCHAR)ExAllocatePool2(POOL_FLAG_NON_PAGED, (SIZE_T)LengthReturned + BytesRead, READ_BUFFER_TAG);
+
 
             if (NULL == TempOrigBuffer)
             {
@@ -909,7 +919,7 @@ NTSTATUS PocPostReadDecrypt(
                 __leave;
             }
 
-            RtlZeroMemory(TempOrigBuffer, (SIZE_T)LengthReturned + BytesRead);
+            //RtlZeroMemory(TempOrigBuffer, (SIZE_T)LengthReturned + BytesRead);
 
             RtlMoveMemory(TempNewBuffer, outReadBuffer, BytesRead);
             RtlMoveMemory(TempNewBuffer + BytesRead, NewBuffer, LengthReturned);

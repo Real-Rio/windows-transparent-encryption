@@ -220,7 +220,9 @@ NTSTATUS PocQuerySymbolicLink(
 
 	LinkTarget->MaximumLength = 260 * sizeof(WCHAR);
 	LinkTarget->Length = 0;
-	LinkTarget->Buffer = ExAllocatePoolWithTag(NonPagedPool, LinkTarget->MaximumLength, DOS_NAME_BUFFER_TAG);
+	//LinkTarget->Buffer = ExAllocatePoolWithTag(NonPagedPool, LinkTarget->MaximumLength, DOS_NAME_BUFFER_TAG);
+	LinkTarget->Buffer = ExAllocatePool2(POOL_FLAG_NON_PAGED, LinkTarget->MaximumLength, DOS_NAME_BUFFER_TAG);
+
 
 	if (NULL == LinkTarget->Buffer)
 	{
@@ -228,7 +230,7 @@ NTSTATUS PocQuerySymbolicLink(
 		goto EXIT;
 	}
 
-	RtlZeroMemory(LinkTarget->Buffer, LinkTarget->MaximumLength);
+	//RtlZeroMemory(LinkTarget->Buffer, LinkTarget->MaximumLength);
 
 	Status = ZwQuerySymbolicLinkObject(LinkHandle, LinkTarget, NULL);
 

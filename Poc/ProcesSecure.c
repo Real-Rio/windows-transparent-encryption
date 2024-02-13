@@ -109,8 +109,12 @@ NTSTATUS PocProcessIntegrityCheck(
 		goto EXIT;
 	}
 
-	ProcessBuffer = ExAllocatePoolWithTag(
+	/*ProcessBuffer = ExAllocatePoolWithTag(
 		PagedPool,
+		FileStandInfo.EndOfFile.LowPart,
+		READ_BUFFER_TAG);*/
+	ProcessBuffer = ExAllocatePool2(
+		POOL_FLAG_PAGED,
 		FileStandInfo.EndOfFile.LowPart,
 		READ_BUFFER_TAG);
 
@@ -122,7 +126,7 @@ NTSTATUS PocProcessIntegrityCheck(
 		goto EXIT;
 	}
 
-	RtlZeroMemory(ProcessBuffer, FileStandInfo.EndOfFile.LowPart);
+	//RtlZeroMemory(ProcessBuffer, FileStandInfo.EndOfFile.LowPart);
 
 	ByteOffset.QuadPart = 0;
 	Status = ZwReadFile(
@@ -158,8 +162,12 @@ NTSTATUS PocProcessIntegrityCheck(
 
 	SizeOfProcessImage = HEADER_VAL_T(pHeaders, SizeOfImage);
 
-	ProcessImage = ExAllocatePoolWithTag(
+	/*ProcessImage = ExAllocatePoolWithTag(
 		PagedPool,
+		HEADER_VAL_T(pHeaders, SizeOfImage),
+		READ_BUFFER_TAG);*/
+	ProcessImage = ExAllocatePool2(
+		POOL_FLAG_PAGED,
 		HEADER_VAL_T(pHeaders, SizeOfImage),
 		READ_BUFFER_TAG);
 
@@ -171,7 +179,7 @@ NTSTATUS PocProcessIntegrityCheck(
 		goto EXIT;
 	}
 
-	RtlZeroMemory(ProcessImage, HEADER_VAL_T(pHeaders, SizeOfImage));
+	//RtlZeroMemory(ProcessImage, HEADER_VAL_T(pHeaders, SizeOfImage));
 
 
 	RtlCopyMemory(ProcessImage, ProcessBuffer, HEADER_VAL_T(pHeaders, SizeOfHeaders));
@@ -1088,8 +1096,12 @@ NTSTATUS PocInitProcess()
 
 	SystemInformationLength = ReturnedLength * 2;
 
-	SystemInfomation = ExAllocatePoolWithTag(
+	/*SystemInfomation = ExAllocatePoolWithTag(
 		NonPagedPool,
+		SystemInformationLength,
+		POC_PR_LIST_TAG);*/
+	SystemInfomation = ExAllocatePool2(
+		POOL_FLAG_NON_PAGED,
 		SystemInformationLength,
 		POC_PR_LIST_TAG);
 
@@ -1100,7 +1112,7 @@ NTSTATUS PocInitProcess()
 		goto EXIT;
 	}
 
-	RtlZeroMemory(SystemInfomation, SystemInformationLength);
+	//RtlZeroMemory(SystemInfomation, SystemInformationLength);
 
 	Status = NtQuerySystemInformation(
 		SystemProcessInformation,

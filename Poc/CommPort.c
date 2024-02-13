@@ -28,7 +28,8 @@ NTSTATUS PocConnectNotifyCallback(
 
 	gClientPort = ClientPort;
 
-	ReplyBuffer = ExAllocatePoolWithTag(NonPagedPool, MESSAGE_SIZE, POC_MESSAGE_TAG);
+	//ReplyBuffer = ExAllocatePoolWithTag(NonPagedPool, MESSAGE_SIZE, POC_MESSAGE_TAG);
+	ReplyBuffer = ExAllocatePool2(POOL_FLAG_NON_PAGED, MESSAGE_SIZE, POC_MESSAGE_TAG);
 
 	if (NULL == ReplyBuffer)
 	{
@@ -36,7 +37,7 @@ NTSTATUS PocConnectNotifyCallback(
 		return STATUS_INSUFFICIENT_RESOURCES;
 	}
 
-	RtlZeroMemory(ReplyBuffer, MESSAGE_SIZE);
+	//RtlZeroMemory(ReplyBuffer, MESSAGE_SIZE);
 
 	return STATUS_SUCCESS;
 }
@@ -737,9 +738,9 @@ NTSTATUS PocInitCommPort()
 		&gServerPort,
 		&ObjectAttributes,
 		NULL,
-		PocConnectNotifyCallback,
-		PocDisconnectNotifyCallback,
-		PocMessageNotifyCallback,
+		PocConnectNotifyCallback,// 客户端连接时的回调
+		PocDisconnectNotifyCallback, // 客户端断开连接时的回调
+		PocMessageNotifyCallback, // 收到客户端消息时的回调
 		1);
 
 	FltFreeSecurityDescriptor(SecurityDescriptor);

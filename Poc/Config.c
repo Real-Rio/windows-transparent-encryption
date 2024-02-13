@@ -33,7 +33,7 @@ PWCHAR allowed_extension[MAX_SECURE_EXTENSION_COUNT] = {
 * 当且仅当文件位于以下文件夹下时才会进行透明加密
 */
 const PWCHAR allowed_path[] = {
-	L"C:\\Users\\53094\\Desktop",
+	L"C:\\Users\\rio\\Desktop",
 	NULL };
 
 
@@ -59,7 +59,7 @@ const PWCHAR secure_process[] = {
 	/*
 	* 用户程序
 	*/
-	L"E:\\software\\notepad++\\notepad.exe",
+	L"C:\\Program Files\\Notepad++\\notepad++.exe",
 	L"C:\\Desktop\\Test.exe",
 
 	//L"C:\\Users\\hkx3upper\\AppData\\Local\\Kingsoft\\WPS Office\\11.1.0.11365\\office6\\wps.exe",

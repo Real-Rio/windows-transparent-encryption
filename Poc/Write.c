@@ -31,21 +31,21 @@ PocPreWriteOperation(
     PMDL NewMdl = NULL;
     LONGLONG NewBufferLength = 0;
 
-    LONGLONG FileSize = 0, StartingVbo = 0, ByteCount = 0, LengthReturned = 0;
+    LONGLONG FileSize = 0, StartingVbo = 0, ByteCount = 0, LengthReturned = 0; // FileSize:写入前的文件大小 
 
     PPOC_VOLUME_CONTEXT VolumeContext = NULL;
     ULONG SectorSize = 0;
     
     PPOC_SWAP_BUFFER_CONTEXT SwapBufferContext = NULL;
     
-    ByteCount = Data->Iopb->Parameters.Write.Length;
-    StartingVbo = Data->Iopb->Parameters.Write.ByteOffset.QuadPart;
+    ByteCount = Data->Iopb->Parameters.Write.Length; // 写入的字节
+    StartingVbo = Data->Iopb->Parameters.Write.ByteOffset.QuadPart; // 写入的偏移量
 
     NonCachedIo = BooleanFlagOn(Data->Iopb->IrpFlags, IRP_NOCACHE);
     PagingIo = BooleanFlagOn(Data->Iopb->IrpFlags, IRP_PAGING_IO);
 
-
-    if (FLT_IS_FASTIO_OPERATION(Data))
+    // 如果是快速IO操作，直接返回
+    if (FLT_IS_FASTIO_OPERATION(Data)) 
     {
         Status = FLT_PREOP_DISALLOW_FASTIO;
         goto ERROR;
@@ -57,7 +57,7 @@ PocPreWriteOperation(
         goto ERROR;
     }
 
-
+    
     Status = PocFindOrCreateStreamContext(
         Data->Iopb->TargetInstance,
         Data->Iopb->TargetFileObject,
@@ -65,6 +65,7 @@ PocPreWriteOperation(
         &StreamContext,
         &ContextCreated);
 
+    // 如果没有找到stramContext，直接返回
     if (STATUS_SUCCESS != Status)
     {
         if (STATUS_NOT_FOUND != Status && !FsRtlIsPagingFile(Data->Iopb->TargetFileObject))
@@ -94,9 +95,9 @@ PocPreWriteOperation(
 
     Status = PocGetProcessName(Data, ProcessName);
 
-
+     
     if (PagingIo && 0 != StreamContext->WriteThroughFileSize)
-    {
+    {  
         FileSize = StreamContext->WriteThroughFileSize;
     }
     else
@@ -118,7 +119,7 @@ PocPreWriteOperation(
     {
         /*
         * 未加密的doc,docx,ppt,pptx,xls,xlsx文件，进程直接写入这类文件时不会自动加密，
-        * 而是会在该进程关闭以后，我们去判断是否应该加密该类文件。
+        * 而是会在该进程关闭以后，我们去判断是否应该加密该类文件。 TODO:如果在close前断电，那么磁盘保存的是否是 明文
         */
         PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, 
             ("%s->Leave PostClose will encrypt the file. StartingVbo = %I64d Length = %I64d ProcessName = %ws File = %ws.\n",
@@ -156,7 +157,9 @@ PocPreWriteOperation(
     }
 
 
-    SwapBufferContext = ExAllocatePoolWithTag(NonPagedPool, sizeof(POC_SWAP_BUFFER_CONTEXT), WRITE_BUFFER_TAG);
+    //SwapBufferContext = ExAllocatePoolWithTag(NonPagedPool, sizeof(POC_SWAP_BUFFER_CONTEXT), WRITE_BUFFER_TAG);
+    SwapBufferContext = ExAllocatePool2(POOL_FLAG_NON_PAGED, sizeof(POC_SWAP_BUFFER_CONTEXT), WRITE_BUFFER_TAG);
+
 
     if (NULL == SwapBufferContext)
     {
@@ -167,7 +170,7 @@ PocPreWriteOperation(
         goto ERROR;
     }
 
-    RtlZeroMemory(SwapBufferContext, sizeof(POC_SWAP_BUFFER_CONTEXT));
+    //RtlZeroMemory(SwapBufferContext, sizeof(POC_SWAP_BUFFER_CONTEXT));
 
 
     if (!NonCachedIo)
@@ -184,15 +187,17 @@ PocPreWriteOperation(
             */
             if (StartingVbo + Data->Iopb->Parameters.Write.Length < AES_BLOCK_SIZE)
             {
+                // 原本写入的长度 
                 SwapBufferContext->OriginalLength = Data->Iopb->Parameters.Write.Length;
 
                 ExEnterCriticalRegionAndAcquireResourceExclusive(StreamContext->Resource);
-
+                // 看起来是写入后的明文长度
                 StreamContext->FileSize = StartingVbo + Data->Iopb->Parameters.Write.Length;
                 StreamContext->LessThanAesBlockSize = TRUE;
 
                 ExReleaseResourceAndLeaveCriticalRegion(StreamContext->Resource);
 
+                // 告诉下层实际写入的字节数
                 Data->Iopb->Parameters.Write.Length = AES_BLOCK_SIZE - (ULONG)StartingVbo;
 
                 PT_DBG_PRINT(PTDBG_TRACE_ROUTINES,
@@ -210,7 +215,7 @@ PocPreWriteOperation(
         else if (AES_BLOCK_SIZE == FileSize)
         {
             /*
-            * PostWrite更新CurrentByteOffset
+            * PostWrite更新CurrentByteOffset（文件新的偏移量）
             */
             if (StartingVbo + Data->Iopb->Parameters.Write.Length < AES_BLOCK_SIZE)
             {
@@ -279,6 +284,7 @@ PocPreWriteOperation(
 
         PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, ("PocPreWriteOperation->RealToWrite = %I64d.\n", LengthReturned));
         
+        // 如果请求使用了MDL，那么替换的缓冲区也使用MDL
         if (Data->Iopb->Parameters.Write.MdlAddress != NULL) 
         {
 
@@ -307,14 +313,14 @@ PocPreWriteOperation(
 
 
 
-
+        // 没看懂
         if (FALSE == StreamContext->IsCipherText &&
             FileSize % SectorSize == 0 &&
             FileSize > PAGE_SIZE &&
             NonCachedIo)
         {
             /*
-            * 表明文件被重复加密了
+            * 表明文件被重复加密了 TODO
             */
             if (StartingVbo <= FileSize - PAGE_SIZE &&
                 StartingVbo + ByteCount >= FileSize - PAGE_SIZE + SectorSize)
@@ -651,7 +657,7 @@ PocPostWriteOperation(
     SwapBufferContext = CompletionContext;
     StreamContext = SwapBufferContext->StreamContext;
 
-
+    // FileSize是写入前的大小还是写入后的大小
     if (0 != StreamContext->WriteThroughFileSize)
     {
         FileSize = StreamContext->WriteThroughFileSize;

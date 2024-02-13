@@ -22,7 +22,7 @@ NTSTATUS PocInitAesECBKey()
 	};
 
 	RtlZeroMemory(&AesInitVar, sizeof(AES_INIT_VARIABLES));
-
+	// 指定加密算法
 	Status = BCryptOpenAlgorithmProvider(&AesInitVar.hAesAlg, BCRYPT_AES_ALGORITHM, NULL, BCRYPT_PROV_DISPATCH);
 
 	if (!NT_SUCCESS(Status))
@@ -39,7 +39,9 @@ NTSTATUS PocInitAesECBKey()
 		goto ERROR;
 	}
 
-	AesInitVar.pbKeyObject = ExAllocatePoolWithTag(NonPagedPool, cbKeyObject, KEY_OBJECT_BUFFER);
+	//AesInitVar.pbKeyObject = ExAllocatePoolWithTag(NonPagedPool, cbKeyObject, KEY_OBJECT_BUFFER);
+	AesInitVar.pbKeyObject = ExAllocatePool2(POOL_FLAG_NON_PAGED, cbKeyObject, KEY_OBJECT_BUFFER);
+
 
 	if (NULL == AesInitVar.pbKeyObject)
 	{
@@ -250,7 +252,9 @@ NTSTATUS PocAesECBEncrypt_CiphertextStealing(
 
 	PCHAR AlignedBuffer = NULL;
 
-	AlignedBuffer = ExAllocatePoolWithTag(NonPagedPool, (SIZE_T)InBufferSize - (SIZE_T)TailLength, WRITE_BUFFER_TAG);
+	//AlignedBuffer = ExAllocatePoolWithTag(NonPagedPool, (SIZE_T)InBufferSize - (SIZE_T)TailLength, WRITE_BUFFER_TAG);
+	AlignedBuffer = ExAllocatePool2(POOL_FLAG_NON_PAGED, (SIZE_T)InBufferSize - (SIZE_T)TailLength, WRITE_BUFFER_TAG);
+
 
 	if (NULL == AlignedBuffer)
 	{
@@ -259,7 +263,7 @@ NTSTATUS PocAesECBEncrypt_CiphertextStealing(
 		goto EXIT;
 	}
 
-	RtlZeroMemory(AlignedBuffer, InBufferSize - TailLength);
+	//RtlZeroMemory(AlignedBuffer, InBufferSize - TailLength);
 
 	RtlMoveMemory(AlignedBuffer, InBuffer, InBufferSize - TailLength);
 
@@ -362,7 +366,9 @@ NTSTATUS PocAesECBDecrypt_CiphertextStealing(
 
 	PCHAR AlignedBuffer = NULL;
 
-	AlignedBuffer = ExAllocatePoolWithTag(NonPagedPool, (SIZE_T)InBufferSize - (SIZE_T)TailLength, READ_BUFFER_TAG);
+	//AlignedBuffer = ExAllocatePoolWithTag(NonPagedPool, (SIZE_T)InBufferSize - (SIZE_T)TailLength, READ_BUFFER_TAG);
+	AlignedBuffer = ExAllocatePool2(POOL_FLAG_NON_PAGED, (SIZE_T)InBufferSize - (SIZE_T)TailLength, READ_BUFFER_TAG);
+
 
 	if (NULL == AlignedBuffer)
 	{
@@ -371,7 +377,7 @@ NTSTATUS PocAesECBDecrypt_CiphertextStealing(
 		goto EXIT;
 	}
 
-	RtlZeroMemory(AlignedBuffer, InBufferSize - TailLength);
+	//RtlZeroMemory(AlignedBuffer, InBufferSize - TailLength);
 
 	RtlMoveMemory(AlignedBuffer, InBuffer, InBufferSize - TailLength);
 
@@ -484,7 +490,9 @@ NTSTATUS PocComputeHash(
 	}
 
 
-	HashDigest = (PUCHAR)ExAllocatePoolWithTag(PagedPool, HashDigestLength, READ_BUFFER_TAG);
+	//HashDigest = (PUCHAR)ExAllocatePoolWithTag(PagedPool, HashDigestLength, READ_BUFFER_TAG);
+	HashDigest = (PUCHAR)ExAllocatePool2(POOL_FLAG_PAGED, HashDigestLength, READ_BUFFER_TAG);
+
 
 	if (NULL == HashDigest)
 	{
@@ -494,7 +502,7 @@ NTSTATUS PocComputeHash(
 		goto cleanup;
 	}
 
-	RtlZeroMemory(HashDigest, HashDigestLength);
+	//RtlZeroMemory(HashDigest, HashDigestLength);
 
 
 

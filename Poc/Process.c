@@ -161,8 +161,12 @@ NTSTATUS PocProcessRulesListInit()
 
 	// PPOC_PROCESS_RULES ProcessRules = NULL;
 
-	PocProcessRulesListSpinLock = ExAllocatePoolWithTag(
+	/*PocProcessRulesListSpinLock = ExAllocatePoolWithTag(
 		NonPagedPool,
+		sizeof(KSPIN_LOCK),
+		POC_PR_LIST_TAG);*/
+	PocProcessRulesListSpinLock = ExAllocatePool2(
+		POOL_FLAG_NON_PAGED,
 		sizeof(KSPIN_LOCK),
 		POC_PR_LIST_TAG);
 
@@ -173,7 +177,7 @@ NTSTATUS PocProcessRulesListInit()
 		goto EXIT;
 	}
 
-	RtlZeroMemory(PocProcessRulesListSpinLock, sizeof(KSPIN_LOCK));
+	//RtlZeroMemory(PocProcessRulesListSpinLock, sizeof(KSPIN_LOCK));
 
 	InitializeListHead(&PocProcessRulesListHead);
 	KeInitializeSpinLock(PocProcessRulesListSpinLock);
@@ -300,7 +304,9 @@ NTSTATUS PocCreateProcessRulesNode(
 
 	PPOC_PROCESS_RULES ProcessRules = NULL;
 
-	ProcessRules = ExAllocatePoolWithTag(NonPagedPool, sizeof(POC_PROCESS_RULES), POC_PR_LIST_TAG);
+	//ProcessRules = ExAllocatePoolWithTag(NonPagedPool, sizeof(POC_PROCESS_RULES), POC_PR_LIST_TAG);
+	ProcessRules = ExAllocatePool2(POOL_FLAG_NON_PAGED, sizeof(POC_PROCESS_RULES), POC_PR_LIST_TAG);
+
 
 	if (NULL == ProcessRules)
 	{
@@ -309,9 +315,11 @@ NTSTATUS PocCreateProcessRulesNode(
 		goto EXIT;
 	}
 
-	RtlZeroMemory(ProcessRules, sizeof(POC_PROCESS_RULES));
+	//RtlZeroMemory(ProcessRules, sizeof(POC_PROCESS_RULES));
 
-	ProcessRules->ProcessName = ExAllocatePoolWithTag(NonPagedPool, POC_MAX_NAME_LENGTH * sizeof(WCHAR), POC_PR_LIST_TAG);
+	//ProcessRules->ProcessName = ExAllocatePoolWithTag(NonPagedPool, POC_MAX_NAME_LENGTH * sizeof(WCHAR), POC_PR_LIST_TAG);
+	ProcessRules->ProcessName = ExAllocatePool2(POOL_FLAG_NON_PAGED, POC_MAX_NAME_LENGTH * sizeof(WCHAR), POC_PR_LIST_TAG);
+
 
 	if (NULL == ProcessRules->ProcessName)
 	{
@@ -320,7 +328,7 @@ NTSTATUS PocCreateProcessRulesNode(
 		goto EXIT;
 	}
 
-	RtlZeroMemory(ProcessRules->ProcessName, POC_MAX_NAME_LENGTH * sizeof(WCHAR));
+	//RtlZeroMemory(ProcessRules->ProcessName, POC_MAX_NAME_LENGTH * sizeof(WCHAR));
 
 
 	InitializeListHead(&ProcessRules->PocCreatedProcessListHead);
@@ -377,7 +385,9 @@ NTSTATUS PocCreateProcessInfoNode(
 
 	PPOC_CREATED_PROCESS_INFO ProcessInfo = NULL;
 
-	ProcessInfo = ExAllocatePoolWithTag(NonPagedPool, sizeof(POC_CREATED_PROCESS_INFO), POC_PR_LIST_TAG);
+	//ProcessInfo = ExAllocatePoolWithTag(NonPagedPool, sizeof(POC_CREATED_PROCESS_INFO), POC_PR_LIST_TAG);
+	ProcessInfo = ExAllocatePool2(POOL_FLAG_NON_PAGED, sizeof(POC_CREATED_PROCESS_INFO), POC_PR_LIST_TAG);
+
 
 	if (NULL == ProcessInfo)
 	{
@@ -386,7 +396,7 @@ NTSTATUS PocCreateProcessInfoNode(
 		goto EXIT;
 	}
 
-	RtlZeroMemory(ProcessInfo, sizeof(POC_CREATED_PROCESS_INFO));
+	//RtlZeroMemory(ProcessInfo, sizeof(POC_CREATED_PROCESS_INFO));
 
 	ProcessInfo->OwnedProcessRule = ProcessRules;
 

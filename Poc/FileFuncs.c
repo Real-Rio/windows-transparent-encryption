@@ -989,7 +989,9 @@ NTSTATUS PocReentryToEncrypt(
         goto EXIT;
     }
 
-    ReadBuffer = ExAllocatePoolWithTag(PagedPool, FileSize, READ_BUFFER_TAG);
+    //ReadBuffer = ExAllocatePoolWithTag(PagedPool, FileSize, READ_BUFFER_TAG);
+    ReadBuffer = ExAllocatePool2(POOL_FLAG_PAGED, FileSize, READ_BUFFER_TAG);
+
 
     if (NULL == ReadBuffer)
     {
@@ -998,7 +1000,7 @@ NTSTATUS PocReentryToEncrypt(
         goto EXIT;
     }
 
-    RtlZeroMemory(ReadBuffer, FileSize);
+    //RtlZeroMemory(ReadBuffer, FileSize);
 
     ByteOffset.QuadPart = 0;
 
@@ -1257,7 +1259,9 @@ NTSTATUS PocReentryToDecrypt(
 
     FileSize = StreamContext->FileSize;
 
-    ReadBuffer = ExAllocatePoolWithTag(PagedPool, FileSize, READ_BUFFER_TAG);
+    //ReadBuffer = ExAllocatePoolWithTag(PagedPool, FileSize, READ_BUFFER_TAG);
+    ReadBuffer = ExAllocatePool2(POOL_FLAG_PAGED, FileSize, READ_BUFFER_TAG);
+
 
     if (NULL == ReadBuffer)
     {
@@ -1266,7 +1270,7 @@ NTSTATUS PocReentryToDecrypt(
         goto EXIT;
     }
     
-    RtlZeroMemory(ReadBuffer, FileSize);
+    //RtlZeroMemory(ReadBuffer, FileSize);
 
     ByteOffset.QuadPart = 0;
 
