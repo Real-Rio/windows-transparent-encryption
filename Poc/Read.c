@@ -115,7 +115,7 @@ PocPreReadOperation(
 
     /* 
     * 明文缓冲是不带文件标识尾的，密文缓冲是带文件标识尾的，
-    * 授权进程读文件明文长度，非授权进程也读明文长度，备份权限的进程读完整的文件长度。
+    * 授权进程读文件明文长度，非授权进程也读明文长度，备份权限的进程读完整的文件长度(用于把文件尾也备份)。
     */
     if (!NonCachedIo)
     {
@@ -193,6 +193,7 @@ PocPreReadOperation(
 
         if (StartingVbo >= StreamContext->FileSize)
         {
+            // 备份进程
             if (NULL != OutProcessInfo &&
                 POC_PR_ACCESS_BACKUP == OutProcessInfo->OwnedProcessRule->Access)
             {
@@ -249,6 +250,7 @@ PocPreReadOperation(
                     Data->Iopb->Parameters.Read.Length,
                     StreamContext->FileSize - StartingVbo));
 
+                // 最多只能读到tailor
                 Data->Iopb->Parameters.Read.Length = (ULONG)(StreamContext->FileSize - StartingVbo);
                 FltSetCallbackDataDirty(Data);
             }
@@ -263,6 +265,7 @@ PocPreReadOperation(
         * 明文缓冲不能有标识尾，首先没有必要，其次还需要在PostRead中不解密标识尾这一块数据，所以直接不读出，
         * 密文缓冲中有标识尾。
         */
+        // 通过FileObject->SectionObjectPointer判断是否是授权进程
         if (StartingVbo >= StreamContext->FileSize &&
             FltObjects->FileObject->SectionObjectPointer !=
             StreamContext->ShadowSectionObjectPointers)
@@ -317,6 +320,7 @@ PocPreReadOperation(
     if (FltObjects->FileObject->SectionObjectPointer ==
         StreamContext->ShadowSectionObjectPointers)
     {
+        // 读密文缓冲，不解密
         /*PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, ("%s->Don't decrypt ciphertext cache map. Process = %ws FileName = %ws.\n", 
             __FUNCTION__, ProcessName,
             StreamContext->FileName));*/

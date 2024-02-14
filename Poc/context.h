@@ -27,7 +27,7 @@ typedef struct _POC_STREAM_CONTEXT
     PFLT_INSTANCE Instance;
 
     /*
-    * FileSize中存着明文==密文大小，因为写进去的尾是NonCachedIo，所以有扇区对齐，不是紧接着密文写的
+    * FileSize中存着明文长度(不包括文件标识尾)，因为写进去的尾是NonCachedIo，所以有扇区对齐，不是紧接着密文写的
     * FileSize主要是用于隐藏尾部，在PostQueryInformation和PreRead，PostRead中使用
     * FileSize会在PostWrite中更新，并在PostClose中写进尾部，以便驱动启动后第一次打开文件时，从尾部中取出
     */

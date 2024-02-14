@@ -334,7 +334,8 @@ NTSTATUS PocCreateFileForEncTailer(
             StreamContext->FileName,
             StreamContext->FileSize,
             ProcessName));
-    }
+    } 
+    // 文件尾和streamContext中的filename不一样 
     else if(strncmp(((PPOC_ENCRYPTION_TAILER)OutReadBuffer)->Flag, EncryptionTailer.Flag,
         strlen(EncryptionTailer.Flag)) == 0)
     {

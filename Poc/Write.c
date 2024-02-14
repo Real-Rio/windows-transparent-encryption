@@ -657,7 +657,7 @@ PocPostWriteOperation(
     SwapBufferContext = CompletionContext;
     StreamContext = SwapBufferContext->StreamContext;
 
-    // FileSize是写入前的大小还是写入后的大小
+    // postWrite中FileSize是写入后的文件大小
     if (0 != StreamContext->WriteThroughFileSize)
     {
         FileSize = StreamContext->WriteThroughFileSize;
