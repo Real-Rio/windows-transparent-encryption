@@ -250,7 +250,7 @@ PocPreWriteOperation(
     }
 
 
-    if (NonCachedIo)
+    if (NonCachedIo) // noncache才真正将明文写入磁盘
     {
         Status = FltGetVolumeContext(FltObjects->Filter, FltObjects->Volume, &VolumeContext);
 
@@ -326,7 +326,7 @@ PocPreWriteOperation(
                 StartingVbo + ByteCount >= FileSize - PAGE_SIZE + SectorSize)
             {
                 if (strncmp(
-                    ((PPOC_ENCRYPTION_TAILER)(OrigBuffer + FileSize - PAGE_SIZE - StartingVbo))->Flag, 
+                    ((PPOC_ENCRYPTION_TAILER)(OrigBuffer + FileSize  - StartingVbo - PAGE_SIZE))->Flag,
                     EncryptionTailer.Flag,
                     strlen(EncryptionTailer.Flag)) == 0)
                 {
@@ -394,7 +394,7 @@ PocPreWriteOperation(
         }
         
 
-
+        // uncacheIO按照扇区刷盘
         try 
         {
             if (FileSize < AES_BLOCK_SIZE)
@@ -426,7 +426,7 @@ PocPreWriteOperation(
             {
                 /*
                 * 当文件大于一个块，Cache Manager将数据分多次写入磁盘，
-                * 最后一次写的数据小于一个块的情况下，现在在倒数第二个块做一下处理
+                * 最后一次写的数据小于一个块的情况下，现在在倒数第二个块做一下处理，保存一个扇区的明文
                 */
 
                 if (SectorSize == ByteCount)
@@ -482,6 +482,7 @@ PocPreWriteOperation(
             else if (FileSize > AES_BLOCK_SIZE && 
                     LengthReturned < AES_BLOCK_SIZE)
             {
+                // 处理最后一个块
                 /*
                 * 当文件大于一个块，Cache Manager将数据分多次写入磁盘，最后一次写的数据小于一个块时
                 */
