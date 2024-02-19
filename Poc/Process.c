@@ -712,7 +712,7 @@ NTSTATUS PocIsUnauthorizedProcess(IN PWCHAR ProcessName)
 		NULL != OutProcessRules &&
 		POC_PR_ACCESS_READWRITE == OutProcessRules->Access)
 	{
-		//PT_DBG_PRINT( PTDBG_TRACE_ROUTINES,("%s->Auth = %ws\n", __FUNCTION__, ProcessName));
+		PT_DBG_PRINT( PTDBG_TRACE_ROUTINES,("%s->Auth = %ws\n", __FUNCTION__, ProcessName));
 		return POC_IS_AUTHORIZED_PROCESS;
 	}
 	else if (STATUS_SUCCESS == Status &&
@@ -723,7 +723,7 @@ NTSTATUS PocIsUnauthorizedProcess(IN PWCHAR ProcessName)
 	}
 	else
 	{
-		//PT_DBG_PRINT( PTDBG_TRACE_ROUTINES,("%s->UnAuth = %ws\n", __FUNCTION__, ProcessName));
+		PT_DBG_PRINT( PTDBG_TRACE_ROUTINES,("%s->UnAuth = %ws\n", __FUNCTION__, ProcessName));
 		return POC_IS_UNAUTHORIZED_PROCESS;
 	}
 

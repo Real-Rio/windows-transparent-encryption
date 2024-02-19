@@ -388,7 +388,9 @@ EXIT:
     return Status;
 }
 
-
+/*
+写入文件尾
+*/
 NTSTATUS PocAppendEncTailerToFile(
     IN PFLT_VOLUME Volume,
     IN PFLT_INSTANCE Instance,
@@ -494,7 +496,7 @@ NTSTATUS PocAppendEncTailerToFile(
 
     ByteOffset.QuadPart = ROUND_TO_SIZE(FileSize, VolumeContext->SectorSize);
 
-
+    // TODO:EncryptionTailer什么时候赋值的
     RtlMoveMemory(WriteBuffer, &EncryptionTailer, sizeof(POC_ENCRYPTION_TAILER));
 
     ((PPOC_ENCRYPTION_TAILER)WriteBuffer)->FileSize = StreamContext->FileSize;;
@@ -1138,7 +1140,7 @@ EXIT:
     return Status;
 }
 
-
+// 特权解密函数
 NTSTATUS PocReentryToDecrypt(
     IN PFLT_INSTANCE Instance,
     IN PWCHAR FileName)

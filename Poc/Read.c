@@ -193,7 +193,7 @@ PocPreReadOperation(
 
         if (StartingVbo >= StreamContext->FileSize)
         {
-            // 备份进程
+            // 备份进程才可以读到文件尾
             if (NULL != OutProcessInfo &&
                 POC_PR_ACCESS_BACKUP == OutProcessInfo->OwnedProcessRule->Access)
             {
@@ -261,7 +261,7 @@ PocPreReadOperation(
     {
 
         /*
-        * 非缓冲读请求，也就是明文缓冲和密文缓冲内的数据，
+        * 非缓冲读请求，也就是读入明文缓冲和密文缓冲内的数据，
         * 明文缓冲不能有标识尾，首先没有必要，其次还需要在PostRead中不解密标识尾这一块数据，所以直接不读出，
         * 密文缓冲中有标识尾。
         */
@@ -546,6 +546,12 @@ PocPostReadOperation(
         }
         else
         {
+            //
+            //  They don't have a MDL and this is not a system buffer
+            //  or a fastio so this is probably some arbitrary user
+            //  buffer.  We can not do the processing at DPC level so
+            //  try and get to a safe IRQL so we can do the processing.
+            //
             if (FltDoCompletionProcessingWhenSafe(Data,
                 FltObjects,
                 CompletionContext,

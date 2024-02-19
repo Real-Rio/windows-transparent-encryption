@@ -329,7 +329,7 @@ PocPreWriteOperation(
                     ((PPOC_ENCRYPTION_TAILER)(OrigBuffer + FileSize  - StartingVbo - PAGE_SIZE))->Flag,
                     EncryptionTailer.Flag,
                     strlen(EncryptionTailer.Flag)) == 0)
-                {
+                { // 缓冲中含有文件尾，说明保存的是密文
 
                     ExEnterCriticalRegionAndAcquireResourceExclusive(StreamContext->Resource);
 
@@ -356,7 +356,7 @@ PocPreWriteOperation(
         if (FileSize > AES_BLOCK_SIZE &&
             LengthReturned < AES_BLOCK_SIZE)
         {
-            NewBufferLength = SectorSize + ByteCount;
+            NewBufferLength = SectorSize + ByteCount; // 多分配一个扇区
         }
         else
         {
@@ -658,7 +658,7 @@ PocPostWriteOperation(
     SwapBufferContext = CompletionContext;
     StreamContext = SwapBufferContext->StreamContext;
 
-    // postWrite中FileSize是写入后的文件大小
+    
     if (0 != StreamContext->WriteThroughFileSize)
     {
         FileSize = StreamContext->WriteThroughFileSize;
@@ -735,7 +735,7 @@ PocPostWriteOperation(
         Data->IoStatus.Information = SwapBufferContext->OriginalLength;
     }
 
-
+    // 代表这次“写”到EOF了
     if (Data->Iopb->Parameters.Write.ByteOffset.QuadPart +
         Data->Iopb->Parameters.Write.Length >=
         FileSize

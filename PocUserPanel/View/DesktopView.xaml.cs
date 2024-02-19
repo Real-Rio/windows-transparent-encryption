@@ -101,6 +101,7 @@ namespace ModernDashboard.View
             else
             {
                 MessageBox.Show("Poc wrong access trye.");
+                return;
             }
 
             if (0 == hPort.ToInt32())
