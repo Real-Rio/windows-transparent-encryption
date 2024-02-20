@@ -47,6 +47,7 @@ namespace ModernDashboard.View
 
         const int POC_GET_PROCESS_RULES = 0x00000005;
         const int POC_ADD_PROCESS_RULES = 0x00000009;
+        const int POC_REMOVE_PROCESS_RULES = 0x0000000C;
 
         const int POC_PROCESS_RULES_SIZE = 324;
 
@@ -60,6 +61,10 @@ namespace ModernDashboard.View
             if (POC_ADD_PROCESS_RULES == ReturnCommand)
             {
                 MessageBox.Show("Poc add process rules success.");
+            }
+            else if(POC_REMOVE_PROCESS_RULES==ReturnCommand)
+            {
+                MessageBox.Show("Poc remove process rules success.");
             }
             else
             {
@@ -201,6 +206,7 @@ namespace ModernDashboard.View
 
             if (0 == ListBox.SelectedItems.Count)
             {
+                MessageBox.Show("Please select one item");
                 return;
             }
 

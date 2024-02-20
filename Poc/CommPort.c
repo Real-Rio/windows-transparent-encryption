@@ -14,7 +14,7 @@ NTSTATUS PocConnectNotifyCallback(
 	IN PVOID ServerPortCookie,
 	IN PVOID ConnectionContext,
 	IN ULONG SizeOfContext,
-	IN PVOID *ConnectionPortCookie)
+	IN PVOID* ConnectionPortCookie)
 {
 
 	UNREFERENCED_PARAMETER(ServerPortCookie);
@@ -70,9 +70,9 @@ NTSTATUS PocMessageNotifyCallback(
 	IN PVOID OutputBuffer,
 	IN ULONG OutputBufferLength,
 	OUT PULONG ReturnOutputBufferLength)
-/* 
-* InputBuffer和ReplyBuffer不能指向一块内存
-*/
+	/*
+	* InputBuffer和ReplyBuffer不能指向一块内存
+	*/
 {
 
 	UNREFERENCED_PARAMETER(PortCookie);
@@ -84,10 +84,10 @@ NTSTATUS PocMessageNotifyCallback(
 	PAGED_CODE();
 
 	PCHAR Buffer = NULL;
-	POC_MESSAGE_HEADER MessageHeader = {0};
+	POC_MESSAGE_HEADER MessageHeader = { 0 };
 	NTSTATUS Status = STATUS_SUCCESS;
 
-	UNICODE_STRING uDosName = {0};
+	UNICODE_STRING uDosName = { 0 };
 
 	if (InputBuffer != NULL)
 	{
@@ -114,14 +114,14 @@ NTSTATUS PocMessageNotifyCallback(
 				/*
 				 * 特权加密和特权解密，从桌面传命令进驱动
 				 */
-				CHAR TempFileName[POC_MAX_NAME_LENGTH] = {0};
-				WCHAR wFileName[POC_MAX_NAME_LENGTH] = {0};
-				ANSI_STRING Ansi = {0};
-				UNICODE_STRING uFileName = {0};
+				CHAR TempFileName[POC_MAX_NAME_LENGTH] = { 0 };
+				WCHAR wFileName[POC_MAX_NAME_LENGTH] = { 0 };
+				ANSI_STRING Ansi = { 0 };
+				UNICODE_STRING uFileName = { 0 };
 				PWCHAR lpFileName = NULL;
 
-				WCHAR wSymbolLinkName[POC_MAX_NAME_LENGTH] = {0};
-				UNICODE_STRING uSymbolLinkName = {0};
+				WCHAR wSymbolLinkName[POC_MAX_NAME_LENGTH] = { 0 };
+				UNICODE_STRING uSymbolLinkName = { 0 };
 
 				PFLT_INSTANCE Instance = NULL;
 
@@ -146,8 +146,8 @@ NTSTATUS PocMessageNotifyCallback(
 
 				if (STATUS_SUCCESS != Status)
 				{
-					PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, 
-						("%s->POC_PRIVILEGE_DECRYPT->RtlAnsiStringToUnicodeString failed status = 0x%x.\n", 
+					PT_DBG_PRINT(PTDBG_TRACE_ROUTINES,
+						("%s->POC_PRIVILEGE_DECRYPT->RtlAnsiStringToUnicodeString failed status = 0x%x.\n",
 							__FUNCTION__, Status));
 					goto EXIT;
 				}
@@ -159,7 +159,7 @@ NTSTATUS PocMessageNotifyCallback(
 				lpFileName = uFileName.Buffer;
 
 				while (*lpFileName != L':' &&
-					   lpFileName < uFileName.Buffer + wcslen(uFileName.Buffer))
+					lpFileName < uFileName.Buffer + wcslen(uFileName.Buffer))
 				{
 					lpFileName++;
 				}
@@ -179,8 +179,8 @@ NTSTATUS PocMessageNotifyCallback(
 
 				if (STATUS_SUCCESS != Status)
 				{
-					PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, 
-						("%s->POC_PRIVILEGE_DECRYPT->PocQuerySymbolicLink failed ststus = 0x%x.\n", 
+					PT_DBG_PRINT(PTDBG_TRACE_ROUTINES,
+						("%s->POC_PRIVILEGE_DECRYPT->PocQuerySymbolicLink failed ststus = 0x%x.\n",
 							__FUNCTION__, Status));
 					goto EXIT;
 				}
@@ -197,7 +197,7 @@ NTSTATUS PocMessageNotifyCallback(
 				}
 
 				Status = PocParseFileNameExtension(
-					uFileName.Buffer, 
+					uFileName.Buffer,
 					FileExtension);
 
 				if (STATUS_SUCCESS != Status)
@@ -211,15 +211,15 @@ NTSTATUS PocMessageNotifyCallback(
 
 				if (POC_IS_TARGET_FILE_EXTENSION != Status)
 				{
-					PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, 
+					PT_DBG_PRINT(PTDBG_TRACE_ROUTINES,
 						("%s->PocBypassIrrelevantFileExtension failed. Irrelevent file extension\n", __FUNCTION__));
 					goto EXIT;
 				}
 
 
 				Status = PocFindOrCreateStreamContextOutsite(
-					Instance, 
-					uFileName.Buffer, 
+					Instance,
+					uFileName.Buffer,
 					TRUE);
 
 				if (STATUS_SUCCESS != Status)
@@ -268,10 +268,10 @@ NTSTATUS PocMessageNotifyCallback(
 				*/
 				PPOC_PROCESS_RULES ProcessRules = NULL;
 
-				ANSI_STRING aProcessName = {0};
-				UNICODE_STRING uProcessName = {0};
-				WCHAR ProcessName[POC_MAX_NAME_LENGTH] = {0};
-				WCHAR DosProcessName[POC_MAX_NAME_LENGTH] = {0};
+				ANSI_STRING aProcessName = { 0 };
+				UNICODE_STRING uProcessName = { 0 };
+				WCHAR ProcessName[POC_MAX_NAME_LENGTH] = { 0 };
+				WCHAR DosProcessName[POC_MAX_NAME_LENGTH] = { 0 };
 
 				if (0 == strlen(((PPOC_MESSAGE_PROCESS_RULES)(Buffer + sizeof(POC_MESSAGE_HEADER)))->ProcessName))
 				{
@@ -292,8 +292,8 @@ NTSTATUS PocMessageNotifyCallback(
 				if (STATUS_SUCCESS != Status)
 				{
 					PT_DBG_PRINT(PTDBG_TRACE_ROUTINES,
-								 ("%s->RtlAnsiStringToUnicodeString failed. Status = 0x%x.\n",
-								  __FUNCTION__, Status));
+						("%s->RtlAnsiStringToUnicodeString failed. Status = 0x%x.\n",
+							__FUNCTION__, Status));
 
 					goto EXIT;
 				}
@@ -322,16 +322,75 @@ NTSTATUS PocMessageNotifyCallback(
 				ProcessRules->Access = ((PPOC_MESSAGE_PROCESS_RULES)(Buffer + sizeof(POC_MESSAGE_HEADER)))->Access;
 
 				wcsncpy(ProcessRules->ProcessName,
-						DosProcessName,
-						wcslen(DosProcessName));
+					DosProcessName,
+					wcslen(DosProcessName));
 
 				PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, ("%s->Add process rules success. DosProcessName = %ws Access = %d.\n", __FUNCTION__,
-													ProcessRules->ProcessName,
-													ProcessRules->Access));
+					ProcessRules->ProcessName,
+					ProcessRules->Access));
 
 				Status = MessageHeader.Command;
 
 				break;
+			}
+			case POC_REMOVE_PROCESS_RULES:
+			{
+				/*
+				* 桌面删除进程规则，
+				*/
+				ANSI_STRING aProcessName = { 0 };
+				UNICODE_STRING uProcessName = { 0 };
+				WCHAR ProcessName[POC_MAX_NAME_LENGTH] = { 0 };
+				WCHAR DosProcessName[POC_MAX_NAME_LENGTH] = { 0 };
+
+				if (0 == strlen(((PPOC_MESSAGE_PROCESS_RULES)(Buffer + sizeof(POC_MESSAGE_HEADER)))->ProcessName))
+				{
+					PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, ("%s->ProcessName is null.\n", __FUNCTION__));
+					Status = STATUS_INVALID_PARAMETER;
+					goto EXIT;
+				}
+
+				aProcessName.Buffer = ((PPOC_MESSAGE_PROCESS_RULES)(Buffer + sizeof(POC_MESSAGE_HEADER)))->ProcessName;
+				aProcessName.Length = (USHORT)strlen(aProcessName.Buffer);
+				aProcessName.MaximumLength = POC_MAX_NAME_LENGTH;
+
+				uProcessName.Buffer = ProcessName;
+				uProcessName.MaximumLength = sizeof(ProcessName);
+
+				Status = RtlAnsiStringToUnicodeString(&uProcessName, &aProcessName, FALSE);
+
+				if (STATUS_SUCCESS != Status)
+				{
+					PT_DBG_PRINT(PTDBG_TRACE_ROUTINES,
+						("%s->RtlAnsiStringToUnicodeString failed. Status = 0x%x.\n",
+							__FUNCTION__, Status));
+
+					goto EXIT;
+				}
+
+				Status = PocAnyPath2DosPath(ProcessName, DosProcessName, sizeof(DosProcessName));
+
+				if (STATUS_SUCCESS != Status)
+				{
+					PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, ("%s->PocAnyPath2DosPath failed. Status = 0x%x.\n", __FUNCTION__, Status));
+					goto EXIT;
+				}
+
+				Status = PocFindProcessRulesNodeByName(
+					DosProcessName,
+					NULL,
+					TRUE);
+
+				if (STATUS_SUCCESS != Status)
+				{
+					PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, ("%s->PocFindProcessRulesNodeByName failed. Status = 0x%x.\n", __FUNCTION__, Status));
+					goto EXIT;
+				}
+
+
+				Status = MessageHeader.Command;
+				break;
+
 			}
 			case POC_ADD_SECURE_FODER:
 			{
@@ -346,7 +405,7 @@ NTSTATUS PocMessageNotifyCallback(
 					goto EXIT;
 				}
 
-				WCHAR SecureFolder[POC_MAX_NAME_LENGTH] = {0};
+				WCHAR SecureFolder[POC_MAX_NAME_LENGTH] = { 0 };
 				WCHAR DosSecureFolder[POC_MAX_NAME_LENGTH] = { 0 };
 
 				Status = PocAnsi2Unicode(
@@ -361,13 +420,13 @@ NTSTATUS PocMessageNotifyCallback(
 				}
 
 				Status = PocAnyPath2DosPath(
-					SecureFolder, 
-					DosSecureFolder, 
+					SecureFolder,
+					DosSecureFolder,
 					sizeof(DosSecureFolder));
 
 				if (Status != STATUS_SUCCESS)
 				{
-					PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, ("%s->PocAnyPath2DosPath failed. Status = 0x%x.\n", 
+					PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, ("%s->PocAnyPath2DosPath failed. Status = 0x%x.\n",
 						__FUNCTION__, Status));
 					goto EXIT;
 				}
@@ -445,7 +504,7 @@ NTSTATUS PocMessageNotifyCallback(
 
 						if (Status != STATUS_SUCCESS)
 						{
-							PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, 
+							PT_DBG_PRINT(PTDBG_TRACE_ROUTINES,
 								("%s->RtlUnicodeToMultiByteN PR failed. Status = 0x%x.\n", __FUNCTION__, Status));
 							goto EXIT;
 						}
@@ -460,7 +519,7 @@ NTSTATUS PocMessageNotifyCallback(
 						Status = POC_GET_PROCESS_RULES;
 						goto EXIT;
 					}
-					
+
 
 					pListEntry = pListEntry->Flink;
 				}
@@ -518,7 +577,7 @@ NTSTATUS PocMessageNotifyCallback(
 
 				Status = RtlMultiByteToUnicodeN(
 					wExtension,
-					sizeof(wExtension), 
+					sizeof(wExtension),
 					&Index,
 					((PPOC_MESSAGE_SECURE_EXTENSION)(Buffer + sizeof(POC_MESSAGE_HEADER)))->Extension,
 					(ULONG)strlen(((PPOC_MESSAGE_SECURE_EXTENSION)
@@ -527,9 +586,9 @@ NTSTATUS PocMessageNotifyCallback(
 				if (Status != STATUS_SUCCESS)
 				{
 					PT_DBG_PRINT(PTDBG_TRACE_ROUTINES,
-						("%s->RtlMultiByteToUnicodeN Ext = %s failed. Status = 0x%x.\n", 
-							__FUNCTION__, 
-							((PPOC_MESSAGE_SECURE_EXTENSION)(Buffer + sizeof(POC_MESSAGE_HEADER)))->Extension, 
+						("%s->RtlMultiByteToUnicodeN Ext = %s failed. Status = 0x%x.\n",
+							__FUNCTION__,
+							((PPOC_MESSAGE_SECURE_EXTENSION)(Buffer + sizeof(POC_MESSAGE_HEADER)))->Extension,
 							Status));
 
 					goto EXIT;
@@ -541,10 +600,10 @@ NTSTATUS PocMessageNotifyCallback(
 				{
 					if (_wcsnicmp(wExtension, secure_extension[i], wcslen(secure_extension[i])) == 0)
 					{
-						PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, 
-							("%s->Remove file extension success. Ext = %ws.\n", 
-							__FUNCTION__,
-							wExtension));
+						PT_DBG_PRINT(PTDBG_TRACE_ROUTINES,
+							("%s->Remove file extension success. Ext = %ws.\n",
+								__FUNCTION__,
+								wExtension));
 
 						for (ULONG j = i; j < secure_extension_count; j++)
 						{
@@ -556,7 +615,7 @@ NTSTATUS PocMessageNotifyCallback(
 						}
 
 						RtlZeroMemory(
-							secure_extension[secure_extension_count], 
+							secure_extension[secure_extension_count],
 							POC_EXTENSION_SIZE);
 
 						secure_extension_count--;

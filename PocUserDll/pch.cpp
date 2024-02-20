@@ -20,6 +20,7 @@
 #define POC_GET_PROCESS_RULES		5
 #define POC_GET_FILE_EXTENSION		6
 #define POC_GET_SECURE_FOLDER		10
+#define POC_REMOVE_PROCESS_RULES	12
 
 
 typedef struct _POC_MESSAGE_HEADER
@@ -142,7 +143,14 @@ INT PocUserAddProcessRules(IN HANDLE hPort, IN PCHAR ProcessName, IN UINT Access
 
 	CHAR InBuffer[520] = { 0 };
 
-	MessageHeader.Command = POC_ADD_PROCESS_RULES;
+	if (Access == 0)
+	{
+		MessageHeader.Command = POC_REMOVE_PROCESS_RULES;
+	}
+	else
+	{
+		MessageHeader.Command = POC_ADD_PROCESS_RULES;
+	}
 	MessageHeader.Length = 320 + sizeof(UINT);
 
 	strncpy(InBuffer, ProcessName, strlen(ProcessName));
@@ -184,9 +192,9 @@ INT PocUserGetMessage(IN HANDLE hPort, IN OUT UINT* Command)
 
 	while (TRUE)
 	{
-		hResult = FilterGetMessage(hPort, 
-			&((PPOC_GET_MESSAGE)Buffer)->MessageHeader, 
-			MESSAGE_SIZE + sizeof(FILTER_MESSAGE_HEADER), 
+		hResult = FilterGetMessage(hPort,
+			&((PPOC_GET_MESSAGE)Buffer)->MessageHeader,
+			MESSAGE_SIZE + sizeof(FILTER_MESSAGE_HEADER),
 			&OverLapped);
 
 		Sleep(1000);
@@ -208,7 +216,7 @@ INT PocUserGetMessage(IN HANDLE hPort, IN OUT UINT* Command)
 }
 
 
-INT PocUserGetMessageEx(IN HANDLE hPort, IN OUT UINT* Command, IN OUT char * MessageBuffer)
+INT PocUserGetMessageEx(IN HANDLE hPort, IN OUT UINT* Command, IN OUT char* MessageBuffer)
 {
 	HRESULT hResult = 0;
 	OVERLAPPED OverLapped = { 0 };
@@ -223,13 +231,13 @@ INT PocUserGetMessageEx(IN HANDLE hPort, IN OUT UINT* Command, IN OUT char * Mes
 	}
 
 	memset(Buffer, 0, MESSAGE_SIZE + sizeof(FILTER_MESSAGE_HEADER));
-	
+
 	while (TRUE)
 	{
 		hResult = FilterGetMessage(
-			hPort, 
-			&((PPOC_GET_MESSAGE)Buffer)->MessageHeader, 
-			MESSAGE_SIZE + sizeof(FILTER_MESSAGE_HEADER), 
+			hPort,
+			&((PPOC_GET_MESSAGE)Buffer)->MessageHeader,
+			MESSAGE_SIZE + sizeof(FILTER_MESSAGE_HEADER),
 			&OverLapped);
 
 		Sleep(1000);
@@ -237,7 +245,7 @@ INT PocUserGetMessageEx(IN HANDLE hPort, IN OUT UINT* Command, IN OUT char * Mes
 
 		if (((PPOC_GET_MESSAGE)Buffer)->Message.Command != 0)
 		{
-			for (int i = 0; i < MESSAGE_SIZE -sizeof(POC_MESSAGE_HEADER) - 1; i++)
+			for (int i = 0; i < MESSAGE_SIZE - sizeof(POC_MESSAGE_HEADER) - 1; i++)
 			{
 				if ('\0' == *(Buffer + sizeof(POC_GET_MESSAGE) + i))
 				{

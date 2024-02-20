@@ -444,6 +444,7 @@ NTSTATUS PocFindProcessRulesNodeByName(
 
 		ProcessRules = CONTAINING_RECORD(pListEntry, POC_PROCESS_RULES, ListEntry);
 
+		// 如果找到了进程规则
 		if (!_wcsnicmp(ProcessRules->ProcessName, ProcessName, wcslen(ProcessRules->ProcessName)))
 		{
 
