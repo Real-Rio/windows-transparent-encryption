@@ -10,9 +10,9 @@
 
     <Grid Background="#303030">
 
-        <Image Source="/Assets/channelIcon.png"
+        <!--<Image Source="/Assets/channelIcon.png"
                Stretch="Uniform"  
-               Margin="77,-102,72.6,-98" Height="700" Width="500"/>
+               Margin="77,-102,72.6,-98" Height="700" Width="500"/>-->
 
     </Grid>
 

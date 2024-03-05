@@ -921,7 +921,7 @@ NTSTATUS PocReentryToEncrypt(
         Status = STATUS_SUCCESS;
         PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, 
             ("%s->%ws being rename to encrypt. Encrypt success.\n", __FUNCTION__, FileName));
-        goto EXIT;
+        goto EXIT; // TODO:是否要把这段注释掉
     }
 
 

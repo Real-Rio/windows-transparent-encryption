@@ -672,7 +672,7 @@ Return Value:
 
     if (NULL != gFilterHandle)
     {
-        FltUnregisterFilter(gFilterHandle);
+        FltUnregisterFilter(gFilterHandle); 
         gFilterHandle = NULL;
     }
 
@@ -720,7 +720,7 @@ PocPreCreateOperation (
     }
 
     /*
-    * 过滤掉非目标扩展名文件的Create
+    * 过滤掉非目标扩展名文件和非机密文件夹的Create
     */
     Status = PocBypassIrrelevantBy_PathAndExtension(
         Data);
@@ -731,7 +731,7 @@ PocPreCreateOperation (
     if (POC_IRRELEVENT_FILE_EXTENSION == Status)
     {
 
-        if (PocFindOrCreateStreamContextOutsite(
+        if (PocFindOrCreateStreamContextOutsite( // 重入postCreate，里面会检查是否有文件尾，更新streamContext
             Data->Iopb->TargetInstance,
             FileName,
             FALSE) == STATUS_SUCCESS)
@@ -860,6 +860,9 @@ PocPostCreateOperationWhenSafe(
 
     Status = PocGetProcessName(Data, ProcessName);
 
+    PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, ("%s->PocGetProcessName ProcessName = %ws \n",
+        __FUNCTION__, ProcessName));
+
     /*
     * 记录操作该文件的授权进程，以便于PostClose创建的线程在所有进程都结束以后，写入文件操作
     */
@@ -929,7 +932,7 @@ PocPostCreateOperationWhenSafe(
                 StreamContext->FileName,
                 &StreamContext->FlushFileObject);
         }
-
+        // 对于非授权进程将缓冲中的内容刷新
         Status = PocFlushOriginalCache(
             FltObjects->Instance,
             StreamContext->FileName);
@@ -982,11 +985,12 @@ PocPostCreateOperationWhenSafe(
         }
     }
 
-
+    // 以下流程针对加密文件，默认缓冲指向加密缓冲
     /*
     * 如果向机密文件夹内拷贝一个文件，该文件与机密文件夹其中某个已加密且打开过的文件名字相同，
     * 我们让备份进程指向明文缓冲，让它将新文件写入。
     */
+    // Value that determines how the file should be handled when the file already exists.Disposition can be one of the following. https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddk/nf-ntddk-iocreatefileex
     CreateDisposition = (Data->Iopb->Parameters.Create.Options >> 24) & 0x000000ff;
 
     if (POC_IS_BACKUP_PROCESS == ProcessType &&
@@ -994,7 +998,7 @@ PocPostCreateOperationWhenSafe(
             FILE_OVERWRITE == CreateDisposition ||
             FILE_OVERWRITE_IF == CreateDisposition))
     {
-        StreamContext->IsCipherText = FALSE;
+        StreamContext->IsCipherText = FALSE; // 这样可以读完所有密文
         goto EXIT;
     }
 
@@ -1004,7 +1008,7 @@ PocPostCreateOperationWhenSafe(
     }
 
     /*
-    * 密文缓冲建立，如果已经有了，就直接用
+    * 密文缓冲建立，如果已经有了，就直接用,针对非授权进程
     * 应该以DataSectionObject是否创建为准
     */
     if (FlagOn(Data->Iopb->Parameters.Create.SecurityContext->DesiredAccess,
@@ -1131,8 +1135,8 @@ PocPreCloseOperation(
     Status = PocGetProcessName(Data, ProcessName);
 
 
-    /*PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, ("\nPocPreCloseOperation->enter ProcessName = %ws File = %ws StreamContext->Flag = 0x%x.\n",
-        ProcessName, StreamContext->FileName, StreamContext->Flag));*/
+    PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, ("\nPocPreCloseOperation->enter ProcessName = %ws File = %ws StreamContext->Flag = 0x%x.\n",
+        ProcessName, StreamContext->FileName, StreamContext->Flag));
 
 
     *CompletionContext = StreamContext;

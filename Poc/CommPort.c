@@ -783,7 +783,7 @@ NTSTATUS PocInitCommPort()
 		return Status;
 	}
 
-	RtlInitUnicodeString(&CommPortName, L"\\FOKS-TROT");
+	RtlInitUnicodeString(&CommPortName, L"\\POC-PORT");
 
 	InitializeObjectAttributes(
 		&ObjectAttributes,

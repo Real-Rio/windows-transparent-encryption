@@ -1,8 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DbgengKernelMachineName>Vmware Windows10 x64</DbgengKernelMachineName>
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
+    <DbgengKernelMachineName>win10虚拟机</DbgengKernelMachineName>
+    <DebuggerFlavor>DbgengRemoteDebugger</DebuggerFlavor>
+    <RemoveDriver>True</RemoveDriver>
+    <InstallMode>None</InstallMode>
+    <HardwareIdString>Root\Poc</HardwareIdString>
+    <CommandLine>net start Poc</CommandLine>
+    <ScriptPath>E:\Windows Kits\10\Testing\Tests\Utilities\DefaultDriverPackageInstallationTask.dll</ScriptPath>
+    <DbgengRemoteMachineName>win10虚拟机</DbgengRemoteMachineName>
+    <DeployFiles />
+    <ScriptName>Microsoft.DriverKit.DefaultDriverPackageInstallationClass.PerformDefaultDriverPackageInstallation</ScriptName>
+    <ScriptDeviceQuery />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <DbgengKernelMachineName>Vmware Windows10 x64</DbgengKernelMachineName>

@@ -543,12 +543,13 @@ PocPostSetInformationOperationWhenSafe(
 
             Status = PocBypassIrrelevantBy_PathAndExtension(Data);
 
+            // 目标拓展名改成了非目标拓展名
             if (POC_IRRELEVENT_FILE_EXTENSION == Status || NULL != TargetFileObject)
             {
                 /*PocUpdateFlagInStreamContext(StreamContext, 0);*/
-
+                
                 ExEnterCriticalRegionAndAcquireResourceExclusive(StreamContext->Resource);
-
+               
                 StreamContext->IsCipherText = FALSE;
                 StreamContext->FileSize = 0;
                 RtlZeroMemory(StreamContext->FileName, POC_MAX_NAME_LENGTH * sizeof(WCHAR));
@@ -561,7 +562,7 @@ PocPostSetInformationOperationWhenSafe(
 
             }
             else
-            {
+            { // 目标拓展名改成了目标拓展名
                 PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, ("%s->PocUpdateNameInStreamContext %ws to %ws.\n",
                     __FUNCTION__, StreamContext->FileName, NewFileName));
 

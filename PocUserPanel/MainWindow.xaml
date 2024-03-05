@@ -51,7 +51,7 @@
                 Height="80"
                 Width="850">
 
-            <TextBlock Text="F O K S - T R O T  U S E R P A N E L"
+            <TextBlock Text="透 明 加 密"
                        Style="{StaticResource HeaderStyle}"/>
 
         </Border>
@@ -65,8 +65,8 @@
                 Height="80"
                 Width="850">
 
-            <TextBlock Text="h k x 3 u p p e r"
-                       Style="{StaticResource FooterStyle}"/>
+            <!--<TextBlock Text="h k x 3 u p p e r"
+                       Style="{StaticResource FooterStyle}"/>-->
 
         </Border>
 

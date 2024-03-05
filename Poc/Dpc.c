@@ -136,7 +136,7 @@ NTSTATUS PocDoCompletionProcessingWhenSafe(
 	IN PKEVENT Event)
 /*---------------------------------------------------------
 函数名称:	PocDoCompletionProcessingWhenSafe
-函数描述:	用于在高IRQL时安全调用SafePostCallback，如果是APC_LEVEL及一下，SafePostCallback函数会直接被调用
+函数描述:	用于在高IRQL时安全调用SafePostCallback，如果是APC_LEVEL及以下，SafePostCallback函数会直接被调用
 参数:		SafePostCallback是需要执行的函数，
 			Context是SafePostCallback的参数，如果是局部变量，必须设置Event为无信号，然后KeWaitForSingleObject等待，
 			Event是同步事件（可选），Event需要是分配在NonPagedPool的内存

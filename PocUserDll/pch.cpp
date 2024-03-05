@@ -14,7 +14,7 @@
 #pragma comment(lib, "fltLib.lib")
 
 
-#define COMMPORTNAME L"\\FOKS-TROT"
+#define COMMPORTNAME L"\\POC-PORT"
 
 #define POC_ADD_PROCESS_RULES		9
 #define POC_GET_PROCESS_RULES		5

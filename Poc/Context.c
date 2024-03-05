@@ -113,7 +113,7 @@ Return Value:
         return STATUS_INSUFFICIENT_RESOURCES;
     }
 
-    //ExInitializeResourceLite(streamContext->Resource);
+    ExInitializeResourceLite(streamContext->Resource);
 
 
     *StreamContext = streamContext;
@@ -335,7 +335,7 @@ PocContextCleanup(
         if (streamContext->Resource != NULL)
         {
             ExDeleteResourceLite(streamContext->Resource);
-            ExFreePoolWithTag(streamContext->Resource, POC_RESOURCE_TAG);
+            ExFreePoolWithTag(streamContext->Resource, POC_RESOURCE_TAG); // À¶ÆÁ·¢Éú
             streamContext->Resource = NULL;
         }
 
