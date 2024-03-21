@@ -313,7 +313,7 @@ PocPreWriteOperation(
 
 
 
-        // 没看懂
+        // 没看懂,明明在postCreate中会检查文件尾
         if (FALSE == StreamContext->IsCipherText &&
             FileSize % SectorSize == 0 &&
             FileSize > PAGE_SIZE &&
@@ -735,7 +735,7 @@ PocPostWriteOperation(
         Data->IoStatus.Information = SwapBufferContext->OriginalLength;
     }
 
-    // 代表这次“写”到EOF了
+    // 代表这次“写”到文件尾
     if (Data->Iopb->Parameters.Write.ByteOffset.QuadPart +
         Data->Iopb->Parameters.Write.Length >=
         FileSize

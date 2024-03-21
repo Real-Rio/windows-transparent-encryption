@@ -42,5 +42,12 @@ namespace ModernDashboard.Model
         public string PictureImage { get; set; }
     }
 
-    
+    // Service Page
+    public class ServiceItems
+    {
+        public string ServiceName { get; set; }
+        public string ServiceImage { get; set; }
+    }
+
+
 }

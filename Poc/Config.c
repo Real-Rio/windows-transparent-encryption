@@ -33,7 +33,7 @@ PWCHAR allowed_extension[MAX_SECURE_EXTENSION_COUNT] = {
 * 当且仅当文件位于以下文件夹下时才会进行透明加密
 */
 const PWCHAR allowed_path[] = {
-	L"C:\\Users\\rio\\Desktop",
+	L"C:\\Users\\rio\\Desktop\\jimi",
 	NULL };
 
 
@@ -54,13 +54,13 @@ const PWCHAR secure_process[] = {
 	/*
 	* PocUserPanel必须是授权进程，默认安装路径
 	*/
-	L"C:\\Program Files\\hkx3upper\\PocUserPanel.exe",
+	//L"C:\\Program Files\\hkx3upper\\PocUserPanel.exe",
 	
 	/*
 	* 用户程序
 	*/
 	L"C:\\Program Files\\Notepad++\\notepad++.exe",
-	L"C:\\Desktop\\Test.exe",
+	L"C:\\Users\\rio\\Desktop\\Debug\\PocUserPanel.exe",
 
 	//L"C:\\Users\\hkx3upper\\AppData\\Local\\Kingsoft\\WPS Office\\11.1.0.11365\\office6\\wps.exe",
 	//L"C:\\Users\\hkx3upper\\AppData\\Local\\Kingsoft\\WPS Office\\11.1.0.11365\\office6\\wpp.exe",

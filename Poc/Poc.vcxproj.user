@@ -2,7 +2,7 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DbgengKernelMachineName>win10虚拟机</DbgengKernelMachineName>
-    <DebuggerFlavor>DbgengRemoteDebugger</DebuggerFlavor>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <RemoveDriver>True</RemoveDriver>
     <InstallMode>None</InstallMode>
     <HardwareIdString>Root\Poc</HardwareIdString>

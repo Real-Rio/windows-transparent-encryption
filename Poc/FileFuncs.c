@@ -1327,7 +1327,7 @@ NTSTATUS PocReentryToDecrypt(
         NULL,
         NULL);
 
-    Status = FltCreateFileEx(
+    Status = FltCreateFileEx( // 后续写入非重入，直接将明文写入
         gFilterHandle,
         Instance,
         &hFile,

@@ -83,6 +83,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -108,6 +109,7 @@
     <Compile Include="ViewModel\DownloadViewModel.cs" />
     <Compile Include="ViewModel\NavigationViewModel.cs" />
     <Compile Include="ViewModel\PictureViewModel.cs" />
+    <Compile Include="ViewModel\ServiceViewModel.cs" />
     <Compile Include="ViewModel\StartupViewModel.cs" />
     <Compile Include="View\DesktopView.xaml.cs">
       <DependentUpon>DesktopView.xaml</DependentUpon>
@@ -117,6 +119,9 @@
     </Compile>
     <Compile Include="View\DownloadView.xaml.cs">
       <DependentUpon>DownloadView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ServiceView.xaml.cs">
+      <DependentUpon>ServiceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\PictureView.xaml.cs">
       <DependentUpon>PictureView.xaml</DependentUpon>
@@ -155,6 +160,10 @@
     <Page Include="View\DownloadView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ServiceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\PictureView.xaml">
       <Generator>MSBuild:Compile</Generator>

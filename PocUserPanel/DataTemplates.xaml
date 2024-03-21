@@ -36,4 +36,10 @@
         <view:PictureView/>
     </DataTemplate>
 
+    <!--Service Page-->
+
+    <DataTemplate DataType="{x:Type viewmodel:ServiceViewModel}">
+        <view:ServiceView/>
+    </DataTemplate>
+
 </ResourceDictionary>

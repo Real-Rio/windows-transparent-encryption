@@ -29,10 +29,12 @@ namespace ModernDashboard.ViewModel
             // get added, removed, or when the whole list is refreshed.
             ObservableCollection<MenuItems> menuItems = new ObservableCollection<MenuItems>
             {
-                new MenuItems { MenuName = "ProcessRules", MenuImage = @"Assets/Desktop_Icon.png" },
-                new MenuItems { MenuName = "EncryptFile", MenuImage = @"Assets/Document_Icon.png" },
-                new MenuItems { MenuName = "SecureExt", MenuImage = @"Assets/Download_Icon.png" },
-                new MenuItems { MenuName = "SecureFolder", MenuImage = @"Assets/Images_Icon.png" },
+                new MenuItems { MenuName = "授权进程管理", MenuImage = @"Assets/Desktop_Icon.png" },
+                new MenuItems { MenuName = "特权加解密", MenuImage = @"Assets/Document_Icon.png" },
+                new MenuItems { MenuName = "机密文件后缀", MenuImage = @"Assets/Download_Icon.png" },
+                new MenuItems { MenuName = "开启驱动", MenuImage = @"Assets/Images_Icon.png" },
+                new MenuItems { MenuName = "机密文件夹", MenuImage = @"Assets/Images_Icon.png" },
+
             };
 
             MenuItemsCollection = new CollectionViewSource { Source = menuItems };
@@ -94,16 +96,19 @@ namespace ModernDashboard.ViewModel
         {
             switch(parameter)
             {
-                case "ProcessRules":
+                case "授权进程管理":
                     SelectedViewModel = new DesktopViewModel();
                     break;
-                case "EncryptFile":
+                case "特权加解密":
                     SelectedViewModel = new DocumentViewModel();
                     break;
-                case "SecureExt":
+                case "机密文件后缀":
                     SelectedViewModel = new DownloadViewModel();
                     break;
-                case "SecureFolder":
+                case "开启驱动":
+                    SelectedViewModel = new ServiceViewModel();
+                    break;
+                case "机密文件夹":
                     SelectedViewModel = new PictureViewModel();
                     break;
 
