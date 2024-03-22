@@ -123,7 +123,7 @@ namespace ModernDashboard
 
                 PocUserSendMessage(hPort, args[1], Convert.ToInt32(args[0]));
             }
-
+            
             ModernDashboard.App app = new ModernDashboard.App();
             app.InitializeComponent();
             app.Run();

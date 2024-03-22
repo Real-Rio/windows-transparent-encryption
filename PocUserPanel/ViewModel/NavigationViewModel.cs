@@ -7,9 +7,12 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ServiceProcess;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using ModernDashboard.Model;
+using ModernDashboard.View;
 
 namespace ModernDashboard.ViewModel
 {
@@ -42,6 +45,11 @@ namespace ModernDashboard.ViewModel
 
             // Set Startup Page
             SelectedViewModel = new StartupViewModel();
+
+            // Set Driver Status
+            UpdateDriverStatus();
+
+            _instance = this;
         }
 
         // Implement interface member for INotifyPropertyChanged.
@@ -117,6 +125,13 @@ namespace ModernDashboard.ViewModel
                     break;
             }
         }
+        // 驱动状态
+        private object _driverStatus;
+        public object DriverStatus
+        {
+            get => _driverStatus;
+            set { _driverStatus = value; OnPropertyChanged("DriverStatus"); }
+        }
 
         // Menu Button Command
         private ICommand _menucommand;
@@ -151,6 +166,70 @@ namespace ModernDashboard.ViewModel
                     _closeCommand = new RelayCommand(p => CloseApp(p));
                 }
                 return _closeCommand;
+            }
+        }
+
+        // Update Driver Status
+        public void UpdateDriverStatus()
+        {
+            //DriverStatus = obj;
+            int status = ServiceView.CheckService();
+            if (status == 0)
+            {
+                //driverStatus.Content = "未安装";
+                DriverStatus = "未安装";
+                //MessageBox.Show("请先安装Poc驱动");
+            }
+            else
+            {
+                ServiceControllerStatus serviceStatus = (ServiceControllerStatus)status;
+                switch (serviceStatus)
+                {
+                    case ServiceControllerStatus.Running:
+                        //driverStatus.Content = "运行中";
+                        DriverStatus = "运行中";
+                        break;
+                    case ServiceControllerStatus.Stopped:
+                        //driverStatus.Content = "已停止";
+                        DriverStatus = "已停止";
+                        break;
+                    case ServiceControllerStatus.Paused:
+                        //driverStatus.Content = "已暂停";
+                        DriverStatus = "已暂停";
+                        break;
+                    default:
+                        //driverStatus.Content = "未知状态";
+                        DriverStatus = "未知状态";
+                        break;
+                }
+            }
+        }
+
+        //private ICommand _updateStatusCommand;
+
+        //public ICommand UpdateStatusCommand
+        //{
+        //    get
+        //    {
+        //        if(_updateStatusCommand == null)
+        //        {
+        //            _updateStatusCommand = new RelayCommand(UpdateDriverStatus);
+        //        }
+        //        return _updateStatusCommand;
+        //    }
+        //}
+
+        // 获取当前类的实例
+        private static NavigationViewModel _instance;
+        public static NavigationViewModel Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new NavigationViewModel();
+                }
+                return _instance;
             }
         }
        

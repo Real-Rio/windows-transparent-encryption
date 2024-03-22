@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ModernDashboard.View"
+             xmlns:vm="clr-namespace:ModernDashboard.ViewModel" d:DataContext="{d:DesignInstance Type=vm:NavigationViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="650">
 
@@ -24,7 +25,7 @@
         </Style>
     </UserControl.Style>
 
-    <Grid Background="#303030">
+    <Grid Background="#303030" >
 
         <!--Title-->
 
@@ -39,24 +40,12 @@
 
         <!--Content-->
 
-        <ItemsControl
-                      Height="350"
-                      Width="650"
-                      Margin="0,40,0,0">
+        <StackPanel Orientation="Horizontal" Margin="0,67,0,395" HorizontalAlignment="Center">
 
-            <!--Uniform Grid-->
+            <Button x:Name="OpenDriver" Content="开启驱动" Click="OpenService"  Margin="0,0,50,0"/>
 
-
-
-            <Label x:Name="Title" Content="服务名:" FontSize="15" Foreground="#DDDDDD" Margin="0,18,0,0" 
-                   HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold"/>
-            <TextBox x:Name="ServiceName" Foreground="#DDDDDD" 
-                     Margin="-105,-22,0,0" TextWrapping="Wrap" Width="401"/>
-            <Button x:Name="OpenFolder" Content="查询状态" HorizontalAlignment="Right" 
-                    VerticalAlignment="Top" Click="checkService_Click" Margin="0,-30,50,0"/>
-
-
-        </ItemsControl>
+            <Button x:Name="refresh" Content="刷新驱动"  Click="UpdateService"/>
+        </StackPanel>
 
     </Grid>
 </UserControl>

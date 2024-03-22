@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Runtime.InteropServices;
 using System.Threading;
+using ModernDashboard.ViewModel;
 
 namespace ModernDashboard.View
 {
@@ -28,26 +29,30 @@ namespace ModernDashboard.View
             InitializeComponent();
         }
 
-        private void checkService_Click(object sender, RoutedEventArgs e)
+        private void UpdateService(object sender, RoutedEventArgs e)
         {
-            string Service_Name = ServiceName.Text;
+            NavigationViewModel instance = NavigationViewModel.Instance;
+            instance.UpdateDriverStatus();          
+        }
 
+        private void OpenService(object sender, RoutedEventArgs e)
+        {
+           
+        }
+
+
+        static public int CheckService()
+        {
+            string serviceName = "Poc";
             try
             {
-                ServiceController sc = new ServiceController(Service_Name);
-
-                // print service status
-                MessageBox.Show("Service Status: " + sc.Status.ToString());
+                ServiceController sc = new ServiceController(serviceName);
+                return (int)sc.Status;
             }
             catch (Exception)
             {
-
-                MessageBox.Show("Service Not Found");
+                return 0;
             }
-
-            
-            
         }
-
     }
 }
