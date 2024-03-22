@@ -39,13 +39,14 @@
 
 
         <!--Content-->
+        <ItemsControl
+              Height="350"
+              Width="650"
+              Margin="0,40,0,0">
+        <Button x:Name="OpenDriver" Content="开启驱动" Click="OpenService" HorizontalAlignment="Left"  Margin="0,0,0,0" Width="60"/>
+            <Button x:Name="refresh" Content="刷新驱动"  Click="UpdateService" HorizontalAlignment="Left" Width="60"/>
+        </ItemsControl>
 
-        <StackPanel Orientation="Horizontal" Margin="0,67,0,395" HorizontalAlignment="Center">
-
-            <Button x:Name="OpenDriver" Content="开启驱动" Click="OpenService"  Margin="0,0,50,0"/>
-
-            <Button x:Name="refresh" Content="刷新驱动"  Click="UpdateService"/>
-        </StackPanel>
 
     </Grid>
 </UserControl>
