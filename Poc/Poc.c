@@ -731,7 +731,7 @@ PocPreCreateOperation (
     if (POC_IRRELEVENT_FILE_EXTENSION == Status)
     {
 
-        if (PocFindOrCreateStreamContextOutsite( // 重入postCreate，里面会检查是否有文件尾，更新streamContext
+        if (PocFindOrCreateStreamContextOutsite( 
             Data->Iopb->TargetInstance,
             FileName,
             FALSE) == STATUS_SUCCESS)

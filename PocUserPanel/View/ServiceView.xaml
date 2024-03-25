@@ -43,8 +43,10 @@
               Height="350"
               Width="650"
               Margin="0,40,0,0">
-        <Button x:Name="OpenDriver" Content="开启驱动" Click="OpenService" HorizontalAlignment="Left"  Margin="0,0,0,0" Width="60"/>
+            <Button x:Name="OpenDriver" Content="开启驱动" Click="OpenService" HorizontalAlignment="Left"  Margin="0,0,0,0" Width="60"/>
+            <Button x:Name="CloseDriver" Content="关闭驱动"  Click="CloseService" HorizontalAlignment="Left" Width="60"/>
             <Button x:Name="refresh" Content="刷新驱动"  Click="UpdateService" HorizontalAlignment="Left" Width="60"/>
+
         </ItemsControl>
 
 

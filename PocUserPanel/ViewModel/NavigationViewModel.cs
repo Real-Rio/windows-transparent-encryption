@@ -170,7 +170,7 @@ namespace ModernDashboard.ViewModel
         }
 
         // Update Driver Status
-        public void UpdateDriverStatus()
+        public int UpdateDriverStatus()
         {
             //DriverStatus = obj;
             int status = ServiceView.CheckService();
@@ -203,6 +203,12 @@ namespace ModernDashboard.ViewModel
                         break;
                 }
             }
+            return status;
+        }
+
+        public string GetDriverStatus()
+        {
+            return DriverStatus.ToString();
         }
 
         //private ICommand _updateStatusCommand;
